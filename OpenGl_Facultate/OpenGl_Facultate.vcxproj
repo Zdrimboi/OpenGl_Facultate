@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>GL\x64\freeglut.lib;GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -132,11 +132,68 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="src\camera.cpp" />
+    <ClCompile Include="src\error_handling.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\shader.cpp" />
+    <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\skybox.fs" />
+    <None Include="assets\skybox.vs" />
+    <None Include="freeglut.dll" />
     <None Include="glfw3.dll" />
+    <None Include="x64\Debug\OpenGl_Facultate.exe.recipe" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\CL.command.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\Cl.items.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\CL.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\CL.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link-cvtres.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link-cvtres.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link-rc.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link-rc.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928-cvtres.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928-cvtres.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928-rc.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928-rc.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928.read.2.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.21928.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.command.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.read.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.read.2.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.secondary.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\link.write.1.tlog" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\OpenGl_Facultate.lastbuildstate" />
+    <None Include="x64\Debug\OpenGl_Facultate.tlog\unsuccessfulbuild" />
+    <None Include="x64\Debug\vc143.idb" />
+    <None Include="x64\Debug\vc143.pdb" />
+    <None Include="x64\freeglut.dll" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="src\camera.h" />
+    <ClInclude Include="src\error_handling.h" />
+    <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\shader.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Object Include="x64\Debug\camera.obj" />
+    <Object Include="x64\Debug\error_handling.obj" />
+    <Object Include="x64\Debug\glad.obj" />
+    <Object Include="x64\Debug\main.obj" />
+    <Object Include="x64\Debug\shader.obj" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="x64\Debug\OpenGl_Facultate.log" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="assets\Textures\back.jpg" />
+    <Image Include="assets\Textures\bottom.jpg" />
+    <Image Include="assets\Textures\front.jpg" />
+    <Image Include="assets\Textures\left.jpg" />
+    <Image Include="assets\Textures\right.jpg" />
+    <Image Include="assets\Textures\top.jpg" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
