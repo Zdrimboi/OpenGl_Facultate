@@ -20,8 +20,12 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
-    // Movement speed
+    // Euler Angles
+    float Yaw;
+    float Pitch;
+    // Options
     float MovementSpeed;
+    float MouseSensitivity;
 
     // Constructor with vectors
     Camera(glm::vec3 position, glm::vec3 up);
@@ -32,8 +36,11 @@ public:
     // Processes keyboard input
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
+    // Processes mouse movement input when right button is held
+    void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
+
 private:
-    // Updates the front, right, and up vectors from the current values
+    // Updates the camera vectors based on updated Euler angles
     void updateCameraVectors();
 };
 

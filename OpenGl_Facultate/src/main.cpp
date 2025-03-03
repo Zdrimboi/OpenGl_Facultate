@@ -6,12 +6,19 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Function declarations
+// Callback declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow* window, float deltaTime);
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods);
+void mouse_callback(GLFWwindow* window, double xpos, double ypos);
 
 // Global camera instance, starting at (0,0,5)
 Camera camera(glm::vec3(0.0f, 0.0f, 5.0f), glm::vec3(0.0f, 1.0f, 0.0f));
+
+// Mouse state globals
+bool rightMousePressed = false;
+float lastX = 400, lastY = 300;
+bool firstMouse = true;
 
 int main()
 {
@@ -35,24 +42,25 @@ int main()
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
 
+    // Set mouse callbacks
+    glfwSetMouseButtonCallback(window, mouse_button_callback);
+    glfwSetCursorPosCallback(window, mouse_callback);
+
     // Load OpenGL function pointers with GLAD
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
         return -1;
     }
-
     glEnable(GL_DEPTH_TEST);
 
-    // Build and compile our shader program from external files.
-    // Make sure "cube.vs" and "cube.fs" are in your working directory.
+    // Build and compile our shader program (ensure cube.vs and cube.fs are in your working directory)
     Shader ourShader("assets/skybox.vs", "assets/skybox.fs");
 
-    // Define the vertices for a cube with a unique solid color for each face.
-    // Each face is drawn as two triangles (6 vertices per face).
+    // Cube vertex data: positions and colors for each face
     float vertices[] = {
         // Positions           // Colors
-        // Front face (red)a
+        // Front face (red)
         -1.0f, -1.0f,  1.0f,   1.0f, 0.0f, 0.0f,
          1.0f, -1.0f,  1.0f,   1.0f, 0.0f, 0.0f,
          1.0f,  1.0f,  1.0f,   1.0f, 0.0f, 0.0f,
@@ -106,7 +114,6 @@ int main()
     glGenBuffers(1, &VBO);
 
     glBindVertexArray(VAO);
-
     glBindBuffer(GL_ARRAY_BUFFER, VBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(vertices), vertices, GL_STATIC_DRAW);
 
@@ -131,10 +138,8 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
         ourShader.use();
-        // Create transformation matrices:
+        // Transformation matrices:
         glm::mat4 model = glm::mat4(1.0f);
-        // Rotate the cube over time so you can see multiple faces
-        model = glm::rotate(model, (float)glfwGetTime(), glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
 
@@ -173,4 +178,36 @@ void processInput(GLFWwindow* window, float deltaTime)
         camera.ProcessKeyboard(LEFT, deltaTime);
     if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS)
         camera.ProcessKeyboard(RIGHT, deltaTime);
+}
+
+void mouse_button_callback(GLFWwindow* window, int button, int action, int mods)
+{
+    if (button == GLFW_MOUSE_BUTTON_RIGHT) {
+        if (action == GLFW_PRESS) {
+            rightMousePressed = true;
+            firstMouse = true; // Reset first mouse flag to avoid a large jump
+        }
+        else if (action == GLFW_RELEASE) {
+            rightMousePressed = false;
+        }
+    }
+}
+
+void mouse_callback(GLFWwindow* window, double xpos, double ypos)
+{
+    if (!rightMousePressed)
+        return;
+
+    if (firstMouse)
+    {
+        lastX = (float)xpos;
+        lastY = (float)ypos;
+        firstMouse = false;
+    }
+    float xoffset = (float)xpos - lastX;
+    float yoffset = lastY - (float)ypos; // Reversed: y ranges bottom to top
+    lastX = (float)xpos;
+    lastY = (float)ypos;
+
+    camera.ProcessMouseMovement(xoffset, yoffset);
 }
