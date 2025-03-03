@@ -140,6 +140,8 @@
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="assets\cube.fs" />
+    <None Include="assets\cube.vs" />
     <None Include="assets\skybox.fs" />
     <None Include="assets\skybox.vs" />
     <None Include="freeglut.dll" />

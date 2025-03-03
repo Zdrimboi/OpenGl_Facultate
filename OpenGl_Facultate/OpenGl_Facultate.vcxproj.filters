@@ -65,6 +65,8 @@
     <None Include="x64\Debug\OpenGl_Facultate.tlog\link-rc.write.1.tlog" />
     <None Include="x64\Debug\OpenGl_Facultate.tlog\OpenGl_Facultate.lastbuildstate" />
     <None Include="x64\Debug\OpenGl_Facultate.tlog\unsuccessfulbuild" />
+    <None Include="assets\cube.vs" />
+    <None Include="assets\cube.fs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
