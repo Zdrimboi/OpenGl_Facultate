@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-// Defines several possible options for camera movement.
+// Define camera movement directions
 enum Camera_Movement {
     FORWARD,
     BACKWARD,
@@ -20,34 +20,21 @@ public:
     glm::vec3 Up;
     glm::vec3 Right;
     glm::vec3 WorldUp;
-    // Euler Angles
-    float Yaw;
-    float Pitch;
-    // Camera options
+    // Movement speed
     float MovementSpeed;
-    float MouseSensitivity;
-    float Zoom;
 
     // Constructor with vectors
-    Camera(glm::vec3 position = glm::vec3(0.0f, 0.0f, 3.0f),
-        glm::vec3 up = glm::vec3(0.0f, 1.0f, 0.0f),
-        float yaw = -90.0f,
-        float pitch = 0.0f);
+    Camera(glm::vec3 position, glm::vec3 up);
 
-    // Returns the view matrix calculated using Euler Angles and the LookAt Matrix
+    // Returns the view matrix calculated using LookAt
     glm::mat4 GetViewMatrix();
 
-    // Processes input received from any keyboard-like input system.
+    // Processes keyboard input
     void ProcessKeyboard(Camera_Movement direction, float deltaTime);
 
-    // (Optional) Processes input received from a mouse input system.
-    void ProcessMouseMovement(float xoffset, float yoffset, bool constrainPitch = true);
-    void ProcessMouseScroll(float yoffset);
-
 private:
-    // Calculates the front vector from the Camera's (updated) Euler Angles
+    // Updates the front, right, and up vectors from the current values
     void updateCameraVectors();
 };
 
-#endif // CAMERA_H
-#pragma once
+#endif
