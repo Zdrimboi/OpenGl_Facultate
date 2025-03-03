@@ -7,7 +7,7 @@
 #include <glm/gtc/matrix_transform.hpp>
 #include <vector>
 #include <string>
-#include <stb/stb_image.h>  // Make sure to have stb_image in your include path
+#include <stb/stb_image.h>
 
 // Callback declarations
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
@@ -62,8 +62,7 @@ int main()
     Shader cubeShader("assets/cube.vs", "assets/cube.fs");
     Shader skyboxShader("assets/skybox.vs", "assets/skybox.fs");
 
-    // ----- Cube Setup -----
-    // Define vertices for a colored cube (each face has a unique color)
+    // ----- Cube Setup (Colored Cube using glDrawArrays) -----
     float cubeVertices[] = {
         // Positions           // Colors
         // Front face (red)
@@ -115,76 +114,60 @@ int main()
          -1.0f, -1.0f, -1.0f,   1.0f, 0.0f, 1.0f
     };
 
+    // Setup Cube VAO/VBO (remains unchanged)
     unsigned int cubeVAO, cubeVBO;
     glGenVertexArrays(1, &cubeVAO);
     glGenBuffers(1, &cubeVBO);
-
     glBindVertexArray(cubeVAO);
     glBindBuffer(GL_ARRAY_BUFFER, cubeVBO);
     glBufferData(GL_ARRAY_BUFFER, sizeof(cubeVertices), cubeVertices, GL_STATIC_DRAW);
-
-    // Position attribute (location = 0)
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)0);
     glEnableVertexAttribArray(0);
-    // Color attribute (location = 1)
     glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 6 * sizeof(float), (void*)(3 * sizeof(float)));
     glEnableVertexAttribArray(1);
+    glBindVertexArray(0);
 
-    // ----- Skybox Setup -----
-    // Skybox vertices (a cube)
+    // ----- Optimized Skybox Setup using EBO -----
+    // Define 8 unique vertices for a cube (skybox)
     float skyboxVertices[] = {
-        // positions          
-        -1.0f,  1.0f, -1.0f,
-        -1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f, -1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-
-        -1.0f, -1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f,
-        -1.0f, -1.0f,  1.0f,
-
-        -1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f, -1.0f,
-         1.0f,  1.0f,  1.0f,
-         1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f,  1.0f,
-        -1.0f,  1.0f, -1.0f,
-
-        -1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f, -1.0f,
-         1.0f, -1.0f, -1.0f,
-        -1.0f, -1.0f,  1.0f,
-         1.0f, -1.0f,  1.0f
+        -1.0f, -1.0f, -1.0f,  // 0
+         1.0f, -1.0f, -1.0f,  // 1
+         1.0f,  1.0f, -1.0f,  // 2
+        -1.0f,  1.0f, -1.0f,  // 3
+        -1.0f, -1.0f,  1.0f,  // 4
+         1.0f, -1.0f,  1.0f,  // 5
+         1.0f,  1.0f,  1.0f,  // 6
+        -1.0f,  1.0f,  1.0f   // 7
     };
 
-    unsigned int skyboxVAO, skyboxVBO;
+    // Index array for the 12 triangles (36 indices)
+    unsigned int skyboxIndices[] = {
+        // Back face
+        0, 1, 2, 2, 3, 0,
+        // Front face
+        4, 5, 6, 6, 7, 4,
+        // Left face
+        0, 3, 7, 7, 4, 0,
+        // Right face
+        1, 5, 6, 6, 2, 1,
+        // Top face
+        3, 2, 6, 6, 7, 3,
+        // Bottom face
+        0, 1, 5, 5, 4, 0
+    };
+
+    unsigned int skyboxVAO, skyboxVBO, skyboxEBO;
     glGenVertexArrays(1, &skyboxVAO);
     glGenBuffers(1, &skyboxVBO);
+    glGenBuffers(1, &skyboxEBO);
+
     glBindVertexArray(skyboxVAO);
     glBindBuffer(GL_ARRAY_BUFFER, skyboxVBO);
-    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), &skyboxVertices, GL_STATIC_DRAW);
-    glEnableVertexAttribArray(0);
+    glBufferData(GL_ARRAY_BUFFER, sizeof(skyboxVertices), skyboxVertices, GL_STATIC_DRAW);
+    glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, skyboxEBO);
+    glBufferData(GL_ELEMENT_ARRAY_BUFFER, sizeof(skyboxIndices), skyboxIndices, GL_STATIC_DRAW);
     glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 3 * sizeof(float), (void*)0);
+    glEnableVertexAttribArray(0);
     glBindVertexArray(0);
 
     // Load cubemap texture for the skybox
@@ -196,54 +179,45 @@ int main()
         "assets/Textures/front.jpg",
         "assets/Textures/back.jpg"
     };
-    glGenerateMipmap(GL_TEXTURE_CUBE_MAP);
-    glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_MIN_FILTER, GL_LINEAR_MIPMAP_LINEAR);
-
     unsigned int cubemapTexture = loadCubemap(faces);
-    // Set skybox shader uniform
     skyboxShader.use();
     skyboxShader.setInt("skybox", 0);
 
-    // Timing variables for movement
-    float lastFrame = 0.0f, deltaTime = 0.0f;
+    // Timing variables
+    float lastFrameTime = 0.0f, deltaTime = 0.0f;
     while (!glfwWindowShouldClose(window))
     {
-        float currentFrame = glfwGetTime();
-        deltaTime = currentFrame - lastFrame;
-        lastFrame = currentFrame;
+        float currentFrameTime = glfwGetTime();
+        deltaTime = currentFrameTime - lastFrameTime;
+        lastFrameTime = currentFrameTime;
 
         processInput(window, deltaTime);
 
         glClearColor(0.1f, 0.1f, 0.15f, 1.0f);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        // ----- Draw the Cube -----
+        // ----- Draw the Colored Cube -----
         cubeShader.use();
-        // Rotate the cube over time
         glm::mat4 model = glm::mat4(1.0f);
-        model = glm::rotate(model, currentFrame, glm::vec3(0.5f, 1.0f, 0.0f));
+        model = glm::rotate(model, currentFrameTime, glm::vec3(0.5f, 1.0f, 0.0f));
         glm::mat4 view = camera.GetViewMatrix();
         glm::mat4 projection = glm::perspective(glm::radians(45.0f), 800.f / 600.f, 0.1f, 100.0f);
         cubeShader.setMat4("model", model);
         cubeShader.setMat4("view", view);
         cubeShader.setMat4("projection", projection);
-
         glBindVertexArray(cubeVAO);
         glDrawArrays(GL_TRIANGLES, 0, 36);
 
         // ----- Draw the Skybox -----
-        // Change depth function so skybox is drawn behind all objects
         glDepthFunc(GL_LEQUAL);
         skyboxShader.use();
-        // Remove translation from the view matrix
         glm::mat4 viewNoTranslation = glm::mat4(glm::mat3(view));
         skyboxShader.setMat4("view", viewNoTranslation);
         skyboxShader.setMat4("projection", projection);
-
         glBindVertexArray(skyboxVAO);
         glActiveTexture(GL_TEXTURE0);
         glBindTexture(GL_TEXTURE_CUBE_MAP, cubemapTexture);
-        glDrawArrays(GL_TRIANGLES, 0, 36);
+        glDrawElements(GL_TRIANGLES, 36, GL_UNSIGNED_INT, 0);
         glBindVertexArray(0);
         glDepthFunc(GL_LESS);
 
@@ -256,12 +230,16 @@ int main()
     glDeleteBuffers(1, &cubeVBO);
     glDeleteVertexArrays(1, &skyboxVAO);
     glDeleteBuffers(1, &skyboxVBO);
+    glDeleteBuffers(1, &skyboxEBO);
     glfwTerminate();
     return 0;
 }
 
 unsigned int loadCubemap(const std::vector<std::string>& faces)
 {
+    stbi_set_flip_vertically_on_load(false); // Cubemap textures usually aren't flipped.
+    glPixelStorei(GL_UNPACK_ALIGNMENT, 1);
+
     unsigned int textureID;
     glGenTextures(1, &textureID);
     glBindTexture(GL_TEXTURE_CUBE_MAP, textureID);
@@ -272,9 +250,12 @@ unsigned int loadCubemap(const std::vector<std::string>& faces)
         unsigned char* data = stbi_load(faces[i].c_str(), &width, &height, &nrChannels, 0);
         if (data)
         {
-            // Note: adjust the format based on your image (GL_RGB or GL_RGBA)
+            GLenum format = GL_RGB;
+            if (nrChannels == 4)
+                format = GL_RGBA;
+
             glTexImage2D(GL_TEXTURE_CUBE_MAP_POSITIVE_X + i,
-                0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
+                0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             stbi_image_free(data);
         }
         else
@@ -288,6 +269,7 @@ unsigned int loadCubemap(const std::vector<std::string>& faces)
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE);
     glTexParameteri(GL_TEXTURE_CUBE_MAP, GL_TEXTURE_WRAP_R, GL_CLAMP_TO_EDGE);
+
     return textureID;
 }
 
