@@ -59,6 +59,10 @@ int main () {
 		glfwSwapBuffers(window);
 		// Poll for and process events
 		glfwPollEvents();
+
+		// Set the background color
+		glClearColor(0.5f, 0.2f, 0.4f, 1.0f);
+		glClear(GL_COLOR_BUFFER_BIT);
 	}
 
 
