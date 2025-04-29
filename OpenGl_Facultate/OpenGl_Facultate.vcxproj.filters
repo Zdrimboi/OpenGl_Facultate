@@ -75,6 +75,8 @@
     <None Include="assets\model.fs" />
     <None Include="freeglut.dll" />
     <None Include="glfw3.dll" />
+    <None Include="assets\dirLight.vs" />
+    <None Include="assets\dirLight.fs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
