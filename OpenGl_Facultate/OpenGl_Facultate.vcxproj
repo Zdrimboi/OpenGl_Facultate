@@ -112,7 +112,7 @@
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalDependencies>GL\x64\freeglut.lib;GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalDependencies>GL\x64\freeglut.lib;assimp\assimp-vc143-mtd.lib;GLFW\glfw3.lib;opengl32.lib;$(CoreLibraryDependencies);%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
@@ -136,12 +136,16 @@
     <ClCompile Include="src\error_handling.cpp" />
     <ClCompile Include="src\glad.c" />
     <ClCompile Include="src\main.cpp" />
+    <ClCompile Include="src\Mesh.cpp" />
+    <ClCompile Include="src\Model.cpp" />
     <ClCompile Include="src\shader.cpp" />
     <ClCompile Include="src\stb_image.cpp" />
   </ItemGroup>
   <ItemGroup>
     <None Include="assets\cube.fs" />
     <None Include="assets\cube.vs" />
+    <None Include="assets\model.fs" />
+    <None Include="assets\model.vs" />
     <None Include="assets\skybox.fs" />
     <None Include="assets\skybox.vs" />
     <None Include="freeglut.dll" />
@@ -177,6 +181,8 @@
     <ClInclude Include="src\camera.h" />
     <ClInclude Include="src\error_handling.h" />
     <ClInclude Include="src\main.h" />
+    <ClInclude Include="src\Mesh.h" />
+    <ClInclude Include="src\Model.h" />
     <ClInclude Include="src\shader.h" />
   </ItemGroup>
   <ItemGroup>
