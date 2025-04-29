@@ -144,8 +144,12 @@
   <ItemGroup>
     <None Include="assets\cube.fs" />
     <None Include="assets\cube.vs" />
+    <None Include="assets\depth.fs" />
+    <None Include="assets\depth.vs" />
     <None Include="assets\dirLight.fs" />
     <None Include="assets\dirLight.vs" />
+    <None Include="assets\dirShadow.fs" />
+    <None Include="assets\dirShadow.vs" />
     <None Include="assets\model.fs" />
     <None Include="assets\model.vs" />
     <None Include="assets\skybox.fs" />

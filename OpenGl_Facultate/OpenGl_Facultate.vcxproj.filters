@@ -77,6 +77,10 @@
     <None Include="glfw3.dll" />
     <None Include="assets\dirLight.vs" />
     <None Include="assets\dirLight.fs" />
+    <None Include="assets\depth.fs" />
+    <None Include="assets\depth.vs" />
+    <None Include="assets\dirShadow.fs" />
+    <None Include="assets\dirShadow.vs" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="src\main.h">
